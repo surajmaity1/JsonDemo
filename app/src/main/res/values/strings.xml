@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">JsonDemo</string>
     <string name="json_demo_app">JsonDemo App</string>
+    <string name="please_wait">Please Wait...</string>
 </resources>
