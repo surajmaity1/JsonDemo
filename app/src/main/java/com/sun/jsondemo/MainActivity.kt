@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -34,7 +35,9 @@ class MainActivity : AppCompatActivity() {
             var connection: HttpURLConnection? = null
 
             try {
-                val url = URL("https://run.mocky.io/v3/f5c9c34a-7be4-4d19-aa8c-c8f2a4dc5600")
+                // prev url - val url = URL("https://run.mocky.io/v3/f5c9c34a-7be4-4d19-aa8c-c8f2a4dc5600")
+                val url = URL("https://run.mocky.io/v3/97399f73-a80b-41cf-801e-f770c0eeeb4c")
+
                 connection = url.openConnection() as HttpURLConnection
                 connection.doInput = true
                 connection.doOutput = true
@@ -85,9 +88,37 @@ class MainActivity : AppCompatActivity() {
             super.onPostExecute(result)
             dismissProgressDialog()
 
-            if (result != null) {
-                Log.i("JSON Response Result", result)
+            if (result == null) return
+            Log.i("JSON Response Result", result)
+
+            // Fetch JSONObject
+            val jsonObject = JSONObject(result)
+            val name = jsonObject.optString("name")
+            Log.i("Name", name)
+
+            // Fetch json object inside another json object i.e -> professional_id_object
+            val professionalIdObject = jsonObject.optJSONObject("professional_id")
+            val linkedinId = professionalIdObject?.optString("linkedin_id")
+            Log.i("linkedin_id","$linkedinId")
+            val githubId = professionalIdObject?.optString("github_id")
+            Log.i("github_id","$githubId")
+            val twitterId = professionalIdObject?.optString("twitter_id")
+            Log.i("twitter_id","$twitterId")
+
+            // fetch JSON array i.e. address
+            val addressArray = jsonObject.optJSONArray("address")
+            Log.i("addressArray's Length", "${addressArray?.length()}")
+
+            for (item in 0 until addressArray!!.length()){
+                Log.i("Value $item", "${addressArray[item]}")
+
+                val addressItemObject = addressArray[item] as JSONObject
+                val city = addressItemObject.optString("city")
+                Log.i("city",city)
+                val pin = addressItemObject.optInt("pin")
+                Log.i("pin","$pin")
             }
+
         }
 
         private fun showProgressDialog(){
