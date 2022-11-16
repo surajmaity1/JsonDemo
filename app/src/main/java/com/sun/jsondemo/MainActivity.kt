@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -91,7 +92,25 @@ class MainActivity : AppCompatActivity() {
             if (result == null) return
             Log.i("JSON Response Result", result)
 
-            // Fetch JSONObject
+            // Fetch Json USING Gson library
+            val responseData = Gson()
+                .fromJson(result, ResponseData::class.java)
+
+            Log.i("Message", responseData.name)
+
+            Log.i("Linkedin Id", responseData.professional_id.linkedin_id)
+            Log.i("Github Id", responseData.professional_id.github_id)
+            Log.i("Twitter Id", responseData.professional_id.twitter_id)
+
+            for (item in responseData.address.indices){
+                Log.i("Item: $item", "${responseData.address[item]}")
+
+                Log.i("City", responseData.address[item].city)
+                Log.i("Pin", "${responseData.address[item].pin}")
+            }
+
+            // Fetch JSONObject USING JSONObject
+            /*
             val jsonObject = JSONObject(result)
             val name = jsonObject.optString("name")
             Log.i("Name", name)
@@ -118,6 +137,8 @@ class MainActivity : AppCompatActivity() {
                 val pin = addressItemObject.optInt("pin")
                 Log.i("pin","$pin")
             }
+
+             */
 
         }
 
